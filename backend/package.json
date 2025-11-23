@@ -1,7 +1,7 @@
 {
-  "name": "backend-ts",
-  "version": "1.0.0",
-  "description": "LLM Council Backend - TypeScript with Vercel AI SDK v5",
+  "name": "llm-council-backend",
+  "version": "2.0.0",
+  "description": "LLM Council Backend - TypeScript with Vercel AI SDK v5 (Multi-Provider Support)",
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
@@ -10,11 +10,15 @@
     "start": "node dist/main.js",
     "type-check": "tsc --noEmit"
   },
-  "keywords": [],
+  "keywords": ["llm", "ai", "council", "vercel-ai-sdk"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ai": "^5.0.0",
+    "@ai-sdk/openai": "^1.0.0",
+    "@ai-sdk/anthropic": "^1.0.0",
+    "@ai-sdk/google": "^1.0.0",
+    "@ai-sdk/mistral": "^1.0.0",
     "@openrouter/ai-sdk-provider": "latest",
     "express": "^4.19.2",
     "cors": "^2.8.5",

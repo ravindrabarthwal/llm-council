@@ -2,8 +2,8 @@
  * 3-stage LLM Council orchestration
  */
 
-import { queryModel, queryModelsParallel, Message, ModelResponse as ORModelResponse } from './openrouter.js';
-import { COUNCIL_MODELS, CHAIRMAN_MODEL } from './config.js';
+import { queryModel, queryModelsParallel, type Message } from './models.js';
+import { COUNCIL_MODELS, CHAIRMAN_CONFIG, TITLE_MODEL_CONFIG } from './config.js';
 import { ModelResponse, RankingResponse, SynthesisResponse } from './storage.js';
 
 /**
@@ -17,10 +17,10 @@ export async function stage1CollectResponses(userQuery: string): Promise<ModelRe
 
   // Format results
   const stage1Results: ModelResponse[] = [];
-  for (const [model, response] of Object.entries(responses)) {
+  for (const [modelName, response] of responses.entries()) {
     if (response !== null) { // Only include successful responses
       stage1Results.push({
-        model,
+        model: modelName,
         content: response.content || ''
       });
     }
@@ -88,12 +88,12 @@ Now provide your evaluation and ranking:`;
 
   // Format results
   const stage2Results: RankingResponse[] = [];
-  for (const [model, response] of Object.entries(responses)) {
+  for (const [modelName, response] of responses.entries()) {
     if (response !== null) {
       const fullText = response.content || '';
       const parsed = parseRankingFromText(fullText);
       stage2Results.push({
-        model,
+        model: modelName,
         evaluation: fullText,
         parsed_ranking: parsed
       });
@@ -140,7 +140,7 @@ Provide a clear, well-reasoned final answer that represents the council's collec
   const messages: Message[] = [{ role: "user", content: chairmanPrompt }];
 
   // Query the chairman model
-  const response = await queryModel(CHAIRMAN_MODEL, messages);
+  const response = await queryModel(CHAIRMAN_CONFIG, messages);
 
   if (response === null) {
     // Fallback if chairman fails
@@ -245,8 +245,8 @@ Title:`;
 
   const messages: Message[] = [{ role: "user", content: titlePrompt }];
 
-  // Use gemini-2.5-flash for title generation (fast and cheap)
-  const response = await queryModel("google/gemini-2.5-flash", messages, 30000);
+  // Use the configured title model (fast and cheap)
+  const response = await queryModel(TITLE_MODEL_CONFIG, messages, 30000);
 
   if (response === null) {
     // Fallback to a generic title

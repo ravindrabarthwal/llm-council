@@ -20,7 +20,7 @@ frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 
-# Backend TypeScript
-backend-ts/node_modules/
-backend-ts/dist/
-backend-ts/.env
+# Backend
+backend/node_modules/
+backend/dist/
+backend/.env
